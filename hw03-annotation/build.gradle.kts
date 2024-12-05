@@ -6,6 +6,8 @@ plugins {
 
 dependencies {
     implementation ("ch.qos.logback:logback-classic")
+    // https://mavenlibs.com/maven/dependency/name.finsterwalder/fileutils
+    implementation("name.finsterwalder:fileutils:1.1")
 
     testImplementation ("org.junit.jupiter:junit-jupiter-api")
     testImplementation ("org.junit.jupiter:junit-jupiter-engine")
