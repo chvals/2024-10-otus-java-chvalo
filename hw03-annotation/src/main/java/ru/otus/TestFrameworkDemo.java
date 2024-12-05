@@ -13,15 +13,14 @@ public class TestFrameworkDemo {
     private static final Logger logger = LoggerFactory.getLogger(TestFrameworkDemo.class);
     public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         String classTestName = "ru.otus.ServiceUtilTest";
-        TestFrameworkDemo testFrameworkDemo = new TestFrameworkDemo();
         try {
-            testFrameworkDemo.startTestByClassName(classTestName);
+            TestFrameworkDemo.startTestByClassName(classTestName);
         } catch (ClassNotFoundException | InstantiationException e) {
             logger.info("Ошибка запуска тестов: {}", e.getMessage());
         }
     }
 
-    public void startTestByClassName(String classTestName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public static void startTestByClassName(String classTestName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Class<?> clazz = Class.forName(classTestName);
         List<String> testMethods = new ArrayList<>();
         String beforeMethodName = "";
