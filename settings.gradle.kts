@@ -2,6 +2,8 @@ rootProject.name = "otusJava"
 include("hw01-gradle")
 include("hw02-generics")
 include("hw03-annotation")
+include("hw04-gc")
+include("hw05-bc")
 
 
 pluginManagement {
@@ -25,5 +27,3 @@ pluginManagement {
         id("com.diffplug.spotless") version spotless
     }
 }
-include("hw03-annotation")
-include("hw04-gc")
