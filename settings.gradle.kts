@@ -26,3 +26,4 @@ pluginManagement {
     }
 }
 include("hw03-annotation")
+include("hw04-gc")
