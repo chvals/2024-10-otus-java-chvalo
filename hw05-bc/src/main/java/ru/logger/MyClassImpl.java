@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 public class MyClassImpl implements MyClassInterface {
 
+    @Log
     @Override
     public int add(int x, int y) {
         return x + y;

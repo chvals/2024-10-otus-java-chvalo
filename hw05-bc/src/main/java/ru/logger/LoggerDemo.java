@@ -7,5 +7,7 @@ public class LoggerDemo {
         System.out.println("2 + 2 = " + myClass.add(2,2));
         System.out.println("-------------------------------------");
         System.out.println("2 + 2 + 2 = " + myClass.add(2,2, 2));
+        System.out.println("-------------------------------------");
+        System.out.println("2 + 2 = " + myClass.add(2,2));
     }
 }

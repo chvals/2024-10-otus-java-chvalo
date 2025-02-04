@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 class Ioc {
     private static final Logger logger = LoggerFactory.getLogger(Ioc.class);
@@ -23,15 +25,26 @@ class Ioc {
     }
 
     static class DemoInvocationHandler implements InvocationHandler {
-        private final MyClassInterface myClass;
+        private final Object myClass;
 
-        DemoInvocationHandler(MyClassInterface myClass) {
+        private Map<Method, Boolean> mapMethodNeedLog = new HashMap<>();
+
+        DemoInvocationHandler(Object myClass) {
             this.myClass = myClass;
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (myClass.getClass().getDeclaredMethod(method.getName(), method.getParameterTypes()).isAnnotationPresent(Log.class)) {
+            //если в кеше нет метода, то добавляем
+            if (!mapMethodNeedLog.containsKey(method)) {
+                if (myClass.getClass().getDeclaredMethod(method.getName(), method.getParameterTypes()).isAnnotationPresent(Log.class)) {
+                    mapMethodNeedLog.put(method, true);
+                } else {
+                    mapMethodNeedLog.put(method, false);
+                }
+            }
+
+            if (mapMethodNeedLog.get(method)) {
                 logger.info("execute method: {}, param: {}", method.getName(), args);
             }
             return method.invoke(myClass, args);
