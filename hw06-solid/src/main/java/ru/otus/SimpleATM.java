@@ -58,12 +58,11 @@ public class SimpleATM extends AbstractATM {
                    banknotes.add(moneyStorage.getBox(banknoteEntry.getKey()).pop());
                 }
             }
-            logger.info("К выдаче пачка банкнот: {}", banknotes.stream()
+            return banknotes.stream()
                     .sorted(Comparator.comparingInt(b -> b.getNominal().getValue()))
-                    .collect(Collectors.toList()));
-            return banknotes;
+                    .collect(Collectors.toList());
         } else {
-            logger.info("нет возможности выдать заявленную сумму = {}", sum);
+            logger.info("Нет возможности выдать заявленную сумму = {}", sum);
             return null;
         }
 

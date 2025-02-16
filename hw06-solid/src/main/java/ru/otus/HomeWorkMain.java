@@ -1,8 +1,12 @@
 package ru.otus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class HomeWorkMain {
+    private static final Logger logger = LoggerFactory.getLogger(HomeWorkMain.class);
     public static void main(String[] args) {
 
         //сформируем хранилище с ячейками нужных номиналов купюр
@@ -15,7 +19,7 @@ public class HomeWorkMain {
         MoneyStorage moneyStorage = new MoneyStorage(mapStorage);
 
         //создадим банкомат с хранилищем
-        AbstractATM simpleATM = new SimpleATM(moneyStorage);
+        BaseATM simpleATM = new SimpleATM(moneyStorage);
 
         //положим пачку купюр в банкомат
         List<Banknote> banknoteList = new ArrayList<>();
@@ -32,7 +36,10 @@ public class HomeWorkMain {
         simpleATM.put(banknoteList);
 
         //снимем определенную сумму
-        simpleATM.get(12900);
-        simpleATM.get(1000);
+        logger.info("К выдаче пачка банкнот: {}", simpleATM.get(12900));
+        logger.info("К выдаче пачка банкнот: {}", simpleATM.get(1000));
+
+        //баланс
+        logger.info("Баланс = {}", simpleATM.getBalans());
     }
 }
