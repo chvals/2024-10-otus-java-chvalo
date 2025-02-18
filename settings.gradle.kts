@@ -5,6 +5,7 @@ include("hw03-annotation")
 include("hw04-gc")
 include("hw05-bc")
 include("hw07-pattern")
+include("hw08-json")
 
 
 pluginManagement {
