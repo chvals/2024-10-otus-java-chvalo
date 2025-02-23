@@ -23,7 +23,7 @@ public class HomeWork {
 
     private static final Logger log = LoggerFactory.getLogger(HomeWork.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchMethodException {
         // Общая часть
         var dataSource = new DriverManagerDataSource(URL, USER, PASSWORD);
         flywayMigrations(dataSource);

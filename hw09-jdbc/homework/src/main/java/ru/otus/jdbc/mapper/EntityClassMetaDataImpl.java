@@ -11,38 +11,52 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
+    private String className;
+    private Constructor constructor;
+    private Field fieldId;
+    private List<Field> fieldList;
+    private List<Field> fieldListWithoutId;
     private Class<T> clazz;
 
-    public EntityClassMetaDataImpl(Class<T> clazz) {
+    public EntityClassMetaDataImpl(Class<T> clazz) throws NoSuchMethodException {
         this.clazz = clazz;
+        initMetaDataClass();
+    }
+
+    private void initMetaDataClass() throws NoSuchMethodException {
+        this.className = this.clazz.getSimpleName();
+        this.constructor = this.clazz.getConstructor();
+        this.fieldId = Arrays.asList(this.clazz.getDeclaredFields()).stream()
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .findFirst().orElse(null);
+        this.fieldList = Arrays.asList(this.clazz.getDeclaredFields());
+        this.fieldListWithoutId = Arrays.asList(this.clazz.getDeclaredFields()).stream()
+                .filter(f -> !f.isAnnotationPresent(Id.class))
+                .collect(Collectors.toList());
     }
 
     @Override
     public String getName() {
-        return this.clazz.getSimpleName();
+        return this.className;
     }
 
     @Override
     public Constructor getConstructor() throws NoSuchMethodException {
-        return this.clazz.getConstructor();
+        return this.constructor;
     }
 
     @Override
     public Field getIdField() {
-        return Arrays.asList(this.clazz.getDeclaredFields()).stream()
-                .filter(f -> f.isAnnotationPresent(Id.class))
-                .findFirst().orElse(null);
+        return this.fieldId;
     }
 
     @Override
     public List<Field> getAllFields() {
-        return Arrays.asList(this.clazz.getDeclaredFields());
+        return this.fieldList;
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return Arrays.asList(this.clazz.getDeclaredFields()).stream()
-                .filter(f -> !f.isAnnotationPresent(Id.class))
-                .collect(Collectors.toList());
+        return this.fieldListWithoutId;
     }
 }

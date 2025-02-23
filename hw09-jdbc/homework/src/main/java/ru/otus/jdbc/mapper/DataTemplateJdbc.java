@@ -3,11 +3,10 @@ package ru.otus.jdbc.mapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import ru.otus.core.Id;
 import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
@@ -33,12 +32,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), rs -> {
             try {
                 if (rs.next()) {
-                    T obj = (T) entityClassMetaData.getConstructor().newInstance();
-                    for (Field field : (List<Field>)entityClassMetaData.getAllFields()) {
-                        field.setAccessible(true);
-                        field.set(obj, rs.getObject(field.getName()));
-                    }
-                    return obj;
+                    return getNewEntityObject(rs);
                 }
                 return null;
             } catch (SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException |
@@ -48,6 +42,15 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         });
     }
 
+    private <T> T getNewEntityObject(ResultSet rs) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
+        T obj = (T) entityClassMetaData.getConstructor().newInstance();
+        for (Field field : (List<Field>)entityClassMetaData.getAllFields()) {
+            field.setAccessible(true);
+            field.set(obj, rs.getObject(field.getName()));
+        }
+        return obj;
+    }
+
     @Override
     public List<T> findAll(Connection connection) {
         return dbExecutor
@@ -55,11 +58,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     var objList = new ArrayList<T>();
                     try {
                         while (rs.next()) {
-                            T obj = (T) entityClassMetaData.getConstructor().newInstance();
-                            for (Field field : (List<Field>)entityClassMetaData.getAllFields()) {
-                                field.setAccessible(true);
-                                field.set(obj, rs.getObject(field.getName()));
-                            }
+                            T obj = getNewEntityObject(rs);
                             objList.add(obj);
                         }
                         return objList;
@@ -68,7 +67,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                         throw new DataTemplateException(e);
                     }
                 })
-                .orElseThrow(() -> new RuntimeException("Unexpected error"));
+                .orElseThrow(() -> new DataTemplateException(new Exception("Data not found")));
     }
 
     @Override
