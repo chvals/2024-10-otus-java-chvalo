@@ -1,25 +1,22 @@
 package ru.otus.jdbc.mapper;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class EntitySQLMetaDataImpl implements EntitySQLMetaData{
+public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData<T>{
     private String selectAllSQL;
     private String selectByIdSql;
     private String insertSql;
     private String updateSql;
-    private EntityClassMetaData metaData;
+    private final EntityClassMetaData<T> metaData;
 
-    public EntitySQLMetaDataImpl(EntityClassMetaData metaData) {
+    public EntitySQLMetaDataImpl(EntityClassMetaData<T> metaData) {
         this.metaData = metaData;
     }
 
     @Override
     public String getSelectAllSql() {
         if (this.selectAllSQL == null) {
-            String selectFields = ((List<Field>) metaData.getAllFields()).stream().map(f -> f.getName()).collect(Collectors.joining(","));
+            String selectFields = metaData.getAllFields().stream().map(f -> f.getName()).collect(Collectors.joining(","));
             String sql = String.format("select %s from %s", selectFields, metaData.getName());
             this.selectAllSQL = sql;
         }
@@ -29,7 +26,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData{
     @Override
     public String getSelectByIdSql() {
         if (this.selectByIdSql == null) {
-            String selectFields = ((List<Field>) metaData.getAllFields()).stream().map(f -> f.getName()).collect(Collectors.joining(","));
+            String selectFields = metaData.getAllFields().stream().map(f -> f.getName()).collect(Collectors.joining(","));
             String sql = String.format("select %s from %s where %s = ?", selectFields, metaData.getName(), metaData.getIdField().getName());
             this.selectByIdSql = sql;
         }
@@ -39,8 +36,8 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData{
     @Override
     public String getInsertSql() {
         if (this.insertSql == null) {
-            String insertFields = ((List<Field>) metaData.getFieldsWithoutId()).stream().map(f -> f.getName()).collect(Collectors.joining(","));
-            String insertValues = ((List<Field>) metaData.getFieldsWithoutId()).stream().map(s -> "?").collect(Collectors.joining(","));
+            String insertFields = metaData.getFieldsWithoutId().stream().map(f -> f.getName()).collect(Collectors.joining(","));
+            String insertValues = metaData.getFieldsWithoutId().stream().map(s -> "?").collect(Collectors.joining(","));
             String sql = String.format("insert into %s(%s) values(%s)", metaData.getName(), insertFields, insertValues);
             this.insertSql = sql;
         }
@@ -50,7 +47,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData{
     @Override
     public String getUpdateSql() {
         if (this.updateSql == null) {
-            String updateFields = ((List<Field>) metaData.getFieldsWithoutId()).stream().map(f -> f.getName()).collect(Collectors.joining(" = ?,")) + " = ?";
+            String updateFields = metaData.getFieldsWithoutId().stream().map(f -> f.getName()).collect(Collectors.joining(" = ?,")) + " = ?";
             String sql = String.format("update %s set %s where %s = ?", metaData.getName(), updateFields, metaData.getIdField().getName());
             this.updateSql = sql;
         }

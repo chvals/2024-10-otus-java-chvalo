@@ -10,18 +10,17 @@ import java.util.*;
 import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
-import ru.otus.crm.model.Client;
 
 /** Сохратяет объект в базу, читает объект из базы */
 @SuppressWarnings("java:S1068")
 public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final DbExecutor dbExecutor;
-    private final EntitySQLMetaData entitySQLMetaData;
+    private final EntitySQLMetaData<T> entitySQLMetaData;
 
-    private final EntityClassMetaData entityClassMetaData;
+    private final EntityClassMetaData<T> entityClassMetaData;
 
-    public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, EntityClassMetaData entityClassMetaData) {
+    public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData<T> entitySQLMetaData, EntityClassMetaData<T> entityClassMetaData) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
         this.entityClassMetaData = entityClassMetaData;
@@ -44,7 +43,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private <T> T getNewEntityObject(ResultSet rs) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
         T obj = (T) entityClassMetaData.getConstructor().newInstance();
-        for (Field field : (List<Field>)entityClassMetaData.getAllFields()) {
+        for (Field field : entityClassMetaData.getAllFields()) {
             field.setAccessible(true);
             field.set(obj, rs.getObject(field.getName()));
         }
@@ -74,7 +73,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     public long insert(Connection connection, T client) {
         try {
             List<Object> param = new ArrayList<>();
-            for (Field field : (List<Field>)entityClassMetaData.getFieldsWithoutId()) {
+            for (Field field : entityClassMetaData.getFieldsWithoutId()) {
                 field.setAccessible(true);
                 param.add(field.get(client));
             }
@@ -89,7 +88,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     public void update(Connection connection, T client) {
         try {
             List<Object> param = new ArrayList<>();
-            for (Field field : (List<Field>)entityClassMetaData.getFieldsWithoutId()) {
+            for (Field field : entityClassMetaData.getFieldsWithoutId()) {
                 field.setAccessible(true);
                 param.add(field.get(client));
             }
