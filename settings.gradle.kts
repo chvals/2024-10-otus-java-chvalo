@@ -7,6 +7,8 @@ include("hw05-bc")
 include("hw06-solid")
 include("hw07-pattern")
 include("hw08-json")
+include("hw09-jdbc:demo")
+include("hw09-jdbc:homework")
 
 
 pluginManagement {
