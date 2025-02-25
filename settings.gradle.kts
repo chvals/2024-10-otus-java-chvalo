@@ -9,6 +9,7 @@ include("hw07-pattern")
 include("hw08-json")
 include("hw09-jdbc:demo")
 include("hw09-jdbc:homework")
+include("hw10-jpql")
 
 
 pluginManagement {
