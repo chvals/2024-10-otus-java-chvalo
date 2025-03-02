@@ -10,6 +10,7 @@ include("hw08-json")
 include("hw09-jdbc:demo")
 include("hw09-jdbc:homework")
 include("hw10-jpql")
+include("hw11-cache")
 
 
 pluginManagement {
@@ -35,3 +36,4 @@ pluginManagement {
         id("io.freefair.gradle") version lombok
     }
 }
+include("hw11-cache")
