@@ -11,6 +11,7 @@ include("hw09-jdbc:demo")
 include("hw09-jdbc:homework")
 include("hw10-jpql")
 include("hw11-cache")
+include("hw12-webserver")
 
 
 pluginManagement {
@@ -22,7 +23,6 @@ pluginManagement {
     val protobufVer: String by settings
     val sonarlint: String by settings
     val spotless: String by settings
-    val lombok: String by settings
 
     plugins {
         id("fr.brouillard.oss.gradle.jgitver") version jgitver
@@ -33,7 +33,5 @@ pluginManagement {
         id("com.google.protobuf") version protobufVer
         id("name.remal.sonarlint") version sonarlint
         id("com.diffplug.spotless") version spotless
-        id("io.freefair.gradle") version lombok
     }
 }
-include("hw11-cache")
