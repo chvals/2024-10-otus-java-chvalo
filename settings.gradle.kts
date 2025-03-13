@@ -37,3 +37,4 @@ pluginManagement {
     }
 }
 include("hw11-cache")
+include("hw13-ioc-container")
