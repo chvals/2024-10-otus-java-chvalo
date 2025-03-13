@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+    <script>
+        function getClientList() {
+            fetch('api/client')
+                .then(response => response.json())
+                .then(function(clients){
+                    let placeholder = document.querySelector("#data-output");
+                    let out = "";
+                    for(let client of clients){
+                        out += "<tr>" +
+                               "  <td>" + client.clientId + " </td>" +
+                               "  <td>" + client.name + "</td>";
+                        if (client.address != null) out +=
+                               "  <td>" + client.address.street + "</td>";
+                        if (client.phones != null && client.phones[0] != null) out +=
+                               "  <td>" + client.phones[0].number + "</td>";
+                        out += "</tr>";
+                    }
+                    placeholder.innerHTML = out;
+                });
+        }
+    </script>
+    <script>
+        function saveClient() {
+            const clientNewData = document.getElementById('clientNewData');
+            let clientName = document.getElementById('clientName').value;
+            let clientAddress = document.getElementById('clientAddress').value;
+            let clientPhone = document.getElementById('clientPhone').value;
+
+            let data = { name: clientName, address: {street: clientAddress}, phones: [{number: clientPhone}]};
+
+            fetch("api/client", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
+                .then(response => response.json())
+                .then(client => clientNewData.innerHTML = JSON.stringify(client))
+                .catch((error) => console.error("Error:", error));
+        }
+    </script>
+</head>
+
+<body>
+<h4>Добавить клиента</h4>
+    <label for="clientName">Имя: </label>
+    <input type="text" id = "clientName" value="Vasay" placeholder="Введите имя">
+    <label for="clientAddress">Адрес: </label>
+    <input type="text" id = "clientAddress" value="Moscow" placeholder="Введите адрес">
+    <label for="clientPhone">Телефон: </label>
+    <input type="text" id = "clientPhone" value="111-222-2222" placeholder="Введите номер телефона">
+    <button onclick="saveClient()">Добавить</button>
+    <pre id = "clientNewData"></pre>
+<br>
+<h4>Получить список клиентов</h4>
+
+<button onclick="getClientList()">Получить</button>
+
+<h4>Список клиентов</h4>
+<table style="width: 400px">
+    <thead>
+        <tr>
+            <td style="width: 50px">ИД</td>
+            <td style="width: 150px">Имя</td>
+            <td style="width: 300px">Адрес</td>
+            <td style="width: 150px">Телефон</td>
+        </tr>
+    </thead>
+    <tbody id="data-output">
+    </tbody>
+</table>
+</body>
+</html>

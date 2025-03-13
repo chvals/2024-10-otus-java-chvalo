@@ -35,5 +35,8 @@ pluginManagement {
         id("com.diffplug.spotless") version spotless
     }
 }
+<<<<<<< HEAD
 include("hw11-cache")
 include("hw13-ioc-container")
+=======
+>>>>>>> eab068b (Merge pull request #13 from chvals/hw12-webserver)
