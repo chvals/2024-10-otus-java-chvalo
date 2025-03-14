@@ -34,6 +34,21 @@ allprojects {
     val testcontainersBom: String by project
     val protobufBom: String by project
     val guava: String by project
+    val jmh: String by project
+    val asm: String by project
+    val jsr305: String by project
+    val redisson: String by project
+    val glassfishJson: String by project
+
+    val jetty: String by project
+    val freemarker: String by project
+
+    val reflections: String by project
+
+    val sockjs: String by project
+    val stomp: String by project
+    val bootstrap: String by project
+    val springDocOpenapiUi: String by project
 
     apply(plugin = "io.spring.dependency-management")
     dependencyManagement {
@@ -44,6 +59,30 @@ allprojects {
                 mavenBom("com.google.protobuf:protobuf-bom:$protobufBom")
             }
             dependency("com.google.guava:guava:$guava")
+            dependency("org.openjdk.jmh:jmh-core:$jmh")
+            dependency("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
+            dependency("org.glassfish:jakarta.json:$glassfishJson")
+            dependency("org.ow2.asm:asm-commons:$asm")
+
+            dependency("com.google.code.findbugs:jsr305:$jsr305")
+            dependency("org.redisson:redisson:$redisson")
+
+            dependency("org.eclipse.jetty.ee10:jetty-ee10-servlet:$jetty")
+            dependency("org.eclipse.jetty:jetty-server:$jetty")
+            dependency("org.eclipse.jetty.ee10:jetty-ee10-webapp:$jetty")
+            dependency("org.eclipse.jetty:jetty-security:$jetty")
+            dependency("org.eclipse.jetty:jetty-http:$jetty")
+            dependency("org.eclipse.jetty:jetty-io:$jetty")
+            dependency("org.eclipse.jetty:jetty-util:$jetty")
+            dependency("org.freemarker:freemarker:$freemarker")
+
+            dependency("org.reflections:reflections:$reflections")
+
+            dependency("org.webjars:sockjs-client:$sockjs")
+            dependency("org.webjars:stomp-websocket:$stomp")
+            dependency("org.webjars:bootstrap:$bootstrap")
+            dependency("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenapiUi")
+
         }
     }
 
@@ -76,8 +115,9 @@ subprojects {
     }
 
     tasks.withType<JavaCompile> {
-        //options.encoding = "UTF-8"
-        options.compilerArgs.addAll(listOf("-Xlint:all,-serial,-processing"))
+        options.encoding = "UTF-8"
+        options.compilerArgs.addAll(listOf("-parameters", "-Xlint:all,-serial,-processing"))
+        dependsOn("spotlessApply")
     }
 
     apply<name.remal.gradle_plugins.sonarlint.SonarLintPlugin>()
@@ -90,7 +130,7 @@ subprojects {
     apply<com.diffplug.gradle.spotless.SpotlessPlugin>()
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         java {
-            palantirJavaFormat("2.38.0")
+            palantirJavaFormat("2.39.0")
         }
     }
 
@@ -100,8 +140,8 @@ subprojects {
         nonQualifierBranches("main,master")
         tagVersionPattern("\${v}\${<meta.DIRTY_TEXT}")
         versionPattern(
-            "\${v}\${<meta.COMMIT_DISTANCE}\${<meta.GIT_SHA1_8}" +
-                    "\${<meta.QUALIFIED_BRANCH_NAME}\${<meta.DIRTY_TEXT}-SNAPSHOT"
+                "\${v}\${<meta.COMMIT_DISTANCE}\${<meta.GIT_SHA1_8}" +
+                        "\${<meta.QUALIFIED_BRANCH_NAME}\${<meta.DIRTY_TEXT}-SNAPSHOT"
         )
     }
 
@@ -119,10 +159,10 @@ tasks {
     val managedVersions by registering {
         doLast {
             project.extensions.getByType<DependencyManagementExtension>()
-                .managedVersions
-                .toSortedMap()
-                .map { "${it.key}:${it.value}" }
-                .forEach(::println)
+                    .managedVersions
+                    .toSortedMap()
+                    .map { "${it.key}:${it.value}" }
+                    .forEach(::println)
         }
     }
 }

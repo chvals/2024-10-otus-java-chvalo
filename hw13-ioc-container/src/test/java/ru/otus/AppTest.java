@@ -7,15 +7,15 @@ import java.io.PrintStream;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Scanner;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import ru.otus.appcontainer.AppComponentsContainerImpl;
+import ru.otus.appcontainer.ContextException;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
-import ru.otus.config.AppConfig;
+import ru.otus.config.AppConfig1;
 import ru.otus.services.*;
 
 class AppTest {
@@ -39,7 +39,7 @@ class AppTest {
             })
     void shouldExtractFromContextCorrectComponentWithNotNullFields(String classNameOrBeanId, Class<?> rootClass)
             throws Exception {
-        var ctx = new AppComponentsContainerImpl(AppConfig.class);
+        var ctx = new AppComponentsContainerImpl(AppConfig1.class);
 
         assertThat(classNameOrBeanId).isNotEmpty();
         Object component;
@@ -72,7 +72,6 @@ class AppTest {
         }
     }
 
-    @Disabled("Эту аннотацию надо убрать")
     @DisplayName("В контексте не должно быть компонентов с одинаковым именем")
     @Test
     void shouldNotAllowTwoComponentsWithSameName() {
@@ -80,11 +79,10 @@ class AppTest {
                 .isInstanceOf(Exception.class);
     }
 
-    @Disabled("Эту аннотацию надо убрать")
     @DisplayName(
             "При попытке достать из контекста отсутствующий или дублирующийся компонент, должно выкидываться исключение")
     @Test
-    void shouldThrowExceptionWhenContainerContainsMoreThanOneOrNoneExpectedComponents() {
+    void shouldThrowExceptionWhenContainerContainsMoreThanOneOrNoneExpectedComponents() throws ContextException {
         var ctx = new AppComponentsContainerImpl(ConfigWithTwoSameComponents.class);
 
         assertThatCode(() -> ctx.getAppComponent(EquationPreparer.class)).isInstanceOf(Exception.class);

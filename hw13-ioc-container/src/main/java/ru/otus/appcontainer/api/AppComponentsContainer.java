@@ -1,7 +1,9 @@
 package ru.otus.appcontainer.api;
 
-public interface AppComponentsContainer {
-    <C> C getAppComponent(Class<C> componentClass);
+import ru.otus.appcontainer.ContextException;
 
-    <C> C getAppComponent(String componentName);
+public interface AppComponentsContainer {
+    <C> C getAppComponent(Class<C> componentClass) throws ContextException;
+
+    <C> C getAppComponent(String componentName) throws ContextException;
 }
