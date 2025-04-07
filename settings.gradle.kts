@@ -38,3 +38,4 @@ pluginManagement {
 
 include("hw13-ioc-container")
 include("hw14-spring-jdbc")
+include("hw15-executors")
