@@ -13,4 +13,4 @@
 EntityClassMetaData
 EntitySQLMetaData
 DataTemplateJdbc
-Метод main в классе HomeWork должен работать без ошибок.
+Метод threadSyncSimple в классе HomeWork должен работать без ошибок.
